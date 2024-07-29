@@ -55,7 +55,7 @@ const LoginScreen = () => {
         setErrorMessage(data.message);
       }
     } catch (error) {
-      setErrorMessage('An error occurred. Please try again.');
+      // setErrorMessage('An error occurred. Please try again.');
     } finally {
       setIsLogin(false);
     }

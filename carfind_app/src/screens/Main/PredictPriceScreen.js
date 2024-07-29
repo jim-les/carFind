@@ -4,6 +4,8 @@ import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
 import { base_url } from '../../Utils/config';
 import predicted from '../../assets/predicted.png';
+import { Make, Model, Year, CountryOfOrigin, Transmission, EngineType, EngineSize, Condition, PreviousOwners, AdditionalFeatures } from './Variable';
+
 
 const PredictPriceScreen = () => {
   const [make, setMake] = useState('');
@@ -30,7 +32,41 @@ const PredictPriceScreen = () => {
     const errors = {};
 
     if (!make) errors.make = 'Make is required';
+    else if ( make != "Toyota" && make != "Mercedes" && make != "Honda" && make != "Ford" && make != "Subaru" && make != "BMW" && make != "Nissan" && make != "Volkswagen") errors.make = 'Invalid make';
     if (!model) errors.model = 'Model is required';
+    // if example make, the modal should only be of the make. Note for all
+    if (make == "Toyota"){
+      if ( model != "Land Cruiser" && model != "Corolla" && model != "RAV4" && model != "Camry") errors.model = 'Invalid model. ' + model + ' not in model of ' + make; 
+    }
+
+    if (make == "Mercedes"){
+      if ( model != "C-Class" && model != "GLE" && model != "E-Class") errors.model = 'Invalid model. ' + model + ' not in model of ' + make; 
+    }
+
+    if (make == "Honda"){
+      if ( model != "Civic" && model != "CR-V" && model != "Accord" && model != "Fit") errors.model = 'Invalid model. ' + model + ' not in model of ' + make; 
+    }
+
+    if (make == "Ford"){
+      if ( model != "Focus" && model != "Ranger" && model != "Explorer" && model != "Fiesta") errors.model = 'Invalid model. ' + model + ' not in model of ' + make; 
+    }
+
+    if (make == "Subaru"){
+      if ( model != "Impreza" && model != "XV" && model != "Forester" && model != "Outback") errors.model = 'Invalid model. ' + model + ' not in model of ' + make; 
+    }
+
+    if (make == "BMW"){
+      if ( model != "3 Series" && model != "X3" && model != "5 Series" && model != "X5") errors.model = 'Invalid model. ' + model + ' not in model of ' + make; 
+    }
+
+    if (make == "Nissan"){
+      if ( model != "Qashqai" && model != "Navara" && model != "Juke" && model != "X-Trail") errors.model = 'Invalid model. ' + model + ' not in model of ' + make; 
+    }
+
+    if (make == "Volkswagen"){
+      if ( model != "Golf" && model != "Polo" && model != "Passat" && model != "Tiguan") errors.model = 'Invalid model. ' + model + ' not in model of ' + make; 
+    }
+   
     if (!year || isNaN(year)) errors.year = 'Valid year is required';
     if (!country) errors.country = 'Country of origin is required';
     if (!transmission) errors.transmission = 'Transmission type is required';
@@ -44,6 +80,8 @@ const PredictPriceScreen = () => {
     setErrors(errors);
     return Object.keys(errors).length === 0;
   };
+
+
 
   const handlePredict = async () => {
     if (!validateInputs()) {
@@ -122,10 +160,23 @@ const PredictPriceScreen = () => {
       <TextInput style={styles.input} placeholder="Model" value={model} onChangeText={setModel} />
       {errors.model && <Text style={styles.errorText}>{errors.model}</Text>}
       
-      <TextInput style={styles.input} placeholder="Year" value={year} onChangeText={setYear} keyboardType="numeric" />
+      {/* year picker */}
+      <Picker selectedValue={year} style={styles.input} onValueChange={(itemValue) => setYear(itemValue)}>
+        <Picker.Item label="Select Year" value="" />
+        {[2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023].map((item, index) => (
+          <Picker.Item key={index} label={item.toString()} value={item.toString()} />
+        ))}
+      </Picker>
       {errors.year && <Text style={styles.errorText}>{errors.year}</Text>}
       
-      <TextInput style={styles.input} placeholder="Country of Origin" value={country} onChangeText={setCountry} />
+
+      {/* country of origin select,  japan, germany, usa */}
+      <Picker selectedValue={country} style={styles.input} onValueChange={(itemValue) => setCountry(itemValue)}>
+        <Picker.Item label="Select Country of Origin" value="" />
+        <Picker.Item label="Japan" value="Japan" />
+        <Picker.Item label="Germany" value="Germany" />
+        <Picker.Item label="USA" value="USA" />
+      </Picker>
       {errors.country && <Text style={styles.errorText}>{errors.country}</Text>}
       
       <Picker selectedValue={transmission} style={styles.input} onValueChange={(itemValue) => setTransmission(itemValue)}>
@@ -137,6 +188,13 @@ const PredictPriceScreen = () => {
       
       <TextInput style={styles.input} placeholder="Engine Type" value={engineType} onChangeText={setEngineType} />
       {errors.engineType && <Text style={styles.errorText}>{errors.engineType}</Text>}
+      
+      {/* engine type, Diesel, Petrol */}
+      <Picker selectedValue={engineType} style={styles.input} onValueChange={(itemValue) => setEngineType(itemValue)}>
+        <Picker.Item label="Select Engine Type" value="" />
+        <Picker.Item label="Diesel" value="Diesel" /> 
+        <Picker.Item label="Petrol" value="Petrol" />
+      </Picker>
       
       <TextInput style={styles.input} placeholder="Engine Size (L)" value={engineSize} onChangeText={setEngineSize} keyboardType="numeric" />
       {errors.engineSize && <Text style={styles.errorText}>{errors.engineSize}</Text>}
@@ -153,7 +211,13 @@ const PredictPriceScreen = () => {
       </Picker>
       {errors.condition && <Text style={styles.errorText}>{errors.condition}</Text>}
       
-      <TextInput style={styles.input} placeholder="Previous Owners" value={previousOwners} onChangeText={setPreviousOwners} keyboardType="numeric" />
+      {/* prviouse owner, 1 - 5 */}
+      <Picker selectedValue={previousOwners} style={styles.input} onValueChange={(itemValue) => setPreviousOwners(itemValue)}>
+        <Picker.Item label="Select Previous Owners" value="" />
+        {[0, 1, 2, 3, 4, 5].map((item, index) => (
+          <Picker.Item key={index} label={item.toString()} value={item.toString()} />
+        ))}
+      </Picker>
       {errors.previousOwners && <Text style={styles.errorText}>{errors.previousOwners}</Text>}
       
       <TextInput style={styles.input} placeholder="Additional Features" value={additionalFeatures} onChangeText={setAdditionalFeatures} />
@@ -218,6 +282,7 @@ const styles = StyleSheet.create({
     padding: 15,
     alignItems: 'center',
     borderRadius: 5,
+    marginBottom: 100,
   },
   buttonText: {
     color: '#fff',
